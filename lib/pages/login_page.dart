@@ -1,11 +1,16 @@
 import 'package:chat_app/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 //Widgets
 import 'package:chat_app/widgets/custom_input_fields.dart';
+// provider
+import '../providers/authentication_provider.dart';
+//services
+import '../services/navigation_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -14,10 +19,18 @@ class _LoginPageState extends State<LoginPage> {
   late double _deviceHeight;
   late double _deviceWidth;
   final _loginFormKey = GlobalKey<FormState>();
+  String? email;
+  String? password;
+  late AuthenticationProvider _auth;
+  late NavigationSevice _navigationSevice;
+
   @override
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
+    _auth = Provider.of<AuthenticationProvider>(context);
+    _navigationSevice = GetIt.instance.get<NavigationSevice>();
+
     return _buildUI();
   }
 
@@ -76,12 +89,20 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomTextFormField(
-                onSaved: (value) {},
+                onSaved: (value) {
+                  setState(() {
+                    email = value;
+                  });
+                },
                 regex: r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
                 hintText: "Email",
                 obscureText: false),
             CustomTextFormField(
-                onSaved: (value) {},
+                onSaved: (value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
                 regex: r".{8,}",
                 hintText: "Password",
                 obscureText: true),
@@ -96,7 +117,12 @@ class _LoginPageState extends State<LoginPage> {
       name: "Login",
       height: _deviceHeight * 0.065,
       width: _deviceWidth * 0.65,
-      onPressed: () {},
+      onPressed: () {
+        if (_loginFormKey.currentState!.validate()) {
+          _loginFormKey.currentState!.save();
+          _auth.loginUsingEmailAndPassword(email: email!, password: password!);
+        }
+      },
     );
   }
 

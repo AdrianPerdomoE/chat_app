@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 //pages
 import './pages/splash_page.dart';
 import './pages/login_page.dart';
+import './pages/home_page.dart';
 //packages
 import 'package:firebase_analytics/firebase_analytics.dart';
 
@@ -34,7 +35,10 @@ class MainApp extends StatelessWidget {
       ],
       child: MaterialApp(
         navigatorKey: NavigationSevice.navigatorKey,
-        routes: {'/login': (BuildContext context) => const LoginPage()},
+        routes: {
+          '/login': (BuildContext context) => const LoginPage(),
+          '/home': (BuildContext context) => const HomePage()
+        },
         initialRoute: '/login',
         debugShowCheckedModeBanner: false,
         title: "ChatApp",
